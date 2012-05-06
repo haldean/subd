@@ -37,30 +37,30 @@ normal_mode mode = NO_NORMALS;
 
 char titleString[150];
 
-mesh globalMesh;
+mesh *globalMesh;
 void drawGlobalMesh() {
-  drawMesh(globalMesh, drawOptions);
+  drawMesh(*globalMesh, drawOptions);
 }
 
-vector<mesh> subdivLevels;
+vector<mesh*> subdivLevels;
 int subdivLevel = 0;
 
 void increaseSubdiv() {
   subdivLevel++;
   if (subdivLevel > subdivLevels.size() - 1) {
-    subdivLevels.push_back(mesh());
-    loopSubdivideMesh(subdivLevels[subdivLevel - 1], subdivLevels[subdivLevel]);
+    subdivLevels.push_back(new mesh());
+    loopSubdivideMesh(*subdivLevels[subdivLevel - 1], *subdivLevels[subdivLevel]);
   }
 
   globalMesh = subdivLevels[subdivLevel];
-  globalMesh.calculateNormals(mode);
+  globalMesh->calculateNormals(mode);
 }
 
 void decreaseSubdiv() {
   if (subdivLevel > 0) {
     subdivLevel--;
     globalMesh = subdivLevels[subdivLevel];
-    globalMesh.calculateNormals(mode);
+    globalMesh->calculateNormals(mode);
   }
 }
 
@@ -124,7 +124,7 @@ void renderScene(void) {
   } glPopMatrix();
 
   ostringstream debug_info;
-  debug_info << globalMesh.faces.size() << " faces, ";
+  debug_info << globalMesh->faces.size() << " faces, ";
   debug_info << "subdivision level " << subdivLevel;
   drawString(debug_info.str());
 
@@ -168,16 +168,16 @@ void specialKeys(unsigned char key, int x, int y) {
     drawOptions.drawVerteces = !drawOptions.drawVerteces;
 
   } else if (key == '1') {
-    globalMesh.calculateNormals(NO_NORMALS);
+    globalMesh->calculateNormals(NO_NORMALS);
     mode = NO_NORMALS;
   } else if (key == '2') {
-    globalMesh.calculateNormals(AVERAGE);
+    globalMesh->calculateNormals(AVERAGE);
     mode = AVERAGE;
   } else if (key == '3') {
-    globalMesh.calculateNormals(AREA_WEIGHTS);
+    globalMesh->calculateNormals(AREA_WEIGHTS);
     mode = AREA_WEIGHTS;
   } else if (key == '4') {
-    globalMesh.calculateNormals(ANGLE_WEIGHTS);
+    globalMesh->calculateNormals(ANGLE_WEIGHTS);
     mode = ANGLE_WEIGHTS;
 
   } else if (key == '<') {
@@ -223,7 +223,8 @@ int main (int argc, char *argv[]) {
     cout << "Could not open " << argv[1] << endl;
     return 1;
   }
-  loadObjFile(objFile, globalMesh);
+  globalMesh = new mesh();
+  loadObjFile(objFile, *globalMesh);
   subdivLevels.push_back(globalMesh);
 
   drawOptions = defaultDrawOptions();
