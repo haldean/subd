@@ -12,6 +12,11 @@ class vertex;
 class edge;
 class face;
 
+enum subd_method {
+  LOOP_SUBD,
+  CATMULL_CLARK_SUBD
+};
+
 enum normal_mode {
   NO_NORMALS,
   AVERAGE,
@@ -42,7 +47,9 @@ class edge {
     edge* next;
     edge* pair;
 
+    edge* previous() const;
     Vector3f asVector() const;
+    Vector3f midpoint() const;
     float angleBetween(const edge& other) const;
 };
 
@@ -53,6 +60,7 @@ class face {
     float area() const;
     int sides() const;
     void calculateNormal();
+    Vector3f centroid() const;
 
     int id;
     Vector3f normal;
@@ -68,6 +76,7 @@ class mesh {
     vector<vertex*> verteces;
     vector<edge*> edges;
     vector<face*> faces;
+    subd_method subdivision;
 };
 
 #endif

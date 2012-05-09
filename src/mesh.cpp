@@ -29,12 +29,18 @@ bool vertex::operator==(const vertex &other) {
   return loc == other.loc;
 }
 
+edge* edge::previous() const {
+  edge *prev = next;
+  while (prev->next != this) prev = prev->next;
+  return prev;
+}
+
 Vector3f edge::asVector() const {
-  edge *e0 = next;
-  while (e0->next != this) {
-    e0 = e0->next;
-  }
-  return vert->loc - e0->vert->loc;
+  return vert->loc - previous()->vert->loc;
+}
+
+Vector3f edge::midpoint() const {
+  return vert->loc - 0.5 * asVector();
 }
 
 float edge::angleBetween(const edge& other) const {
@@ -78,6 +84,21 @@ float face::area() const {
   return area / 2;
 }
 
+Vector3f face::centroid() const {
+  Vector3f centroid = Vector3f::Zero();
+
+  edge *e0 = e;
+  int n = 0;
+  do {
+    centroid += e0->vert->loc;
+    n++;
+    e0 = e0->next;
+  } while (e0 != e);
+  centroid /= n;
+
+  return centroid;
+}
+
 void face::calculateNormal() {
   normal = e->asVector().cross(e->next->asVector());
   normal.normalize();
@@ -94,6 +115,7 @@ mesh::mesh(const mesh &other) {
   faces = vector<face*>(other.faces.size(), NULL);
   edges = vector<edge*>(other.edges.size(), NULL);
   verteces = vector<vertex*>(other.verteces.size(), NULL);
+  subdivision = other.subdivision;
 
   for (auto vit = other.verteces.begin(); vit != other.verteces.end(); vit++) {
     vertex *v = new vertex();

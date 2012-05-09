@@ -64,20 +64,6 @@ void drawFace(face* face, drawopts opts) {
 
     glEnd();
   }
-
-  if (opts.drawVerteces) {
-    edge *e0 = face->e;
-    edge *e = e0;
-    do {
-      vertex *v = e->vert;
-      glPushMatrix(); {
-        glTranslatef(v->loc[0], v->loc[1], v->loc[2]);
-        glutSolidSphere(0.1, 5, 5);
-      } glPopMatrix();
-
-      e = e->next;
-    } while (e != e0);
-  }
 }
 
 void drawEdges(face* face, drawopts opts) {
@@ -142,6 +128,16 @@ void drawMesh(mesh &mesh, drawopts opts) {
         vector3ToGL((*v)->loc);
         vector3ToGL((*v)->loc + (*v)->normal);
       } glEnd();
+    }
+  }
+
+  if (opts.drawVerteces) {
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, opts.meshColor);
+    for (auto v = mesh.verteces.begin(); v != mesh.verteces.end(); v++) {
+      glPushMatrix(); {
+        glTranslatef((*v)->loc[0], (*v)->loc[1], (*v)->loc[2]);
+        glutSolidSphere(0.1, 5, 5);
+      } glPopMatrix();
     }
   }
 }

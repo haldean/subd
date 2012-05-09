@@ -21,6 +21,7 @@ vector<vertex*> verteces;
 vector<edge*> edges;
 vector<face*> faces;
 vector<struct objface> objfaces;
+subd_method method;
 
 int parseVertexSpec(const string vspec) {
   unsigned int vid;
@@ -29,7 +30,11 @@ int parseVertexSpec(const string vspec) {
 }
 
 void parseLine(string line) {
-  if (line[0] == 'v' && line[1] == ' ') {
+  if (line[0] == '#' && line.find("loop") != string::npos) {
+    method = LOOP_SUBD;
+  } else if (line[0] == '#' && line.find("catmullclark") != string::npos) {
+    method = CATMULL_CLARK_SUBD;
+  } else if (line[0] == 'v' && line[1] == ' ') {
     vertex *v = new vertex();
 
     float x, y, z;
@@ -126,6 +131,7 @@ void loadObjFile(istream& file, mesh &mesh) {
   mesh.verteces = verteces;
   mesh.edges = edges;
   mesh.faces = faces;
+  mesh.subdivision = method;
 
   cout << "Loaded mesh: " << endl
     << "  " << verteces.size() << " verteces." << endl

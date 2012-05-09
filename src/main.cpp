@@ -49,7 +49,7 @@ void increaseSubdiv() {
   subdivLevel++;
   if (subdivLevel > subdivLevels.size() - 1) {
     subdivLevels.push_back(new mesh());
-    loopSubdivideMesh(*subdivLevels[subdivLevel - 1], *subdivLevels[subdivLevel]);
+    subdivideMesh(*subdivLevels[subdivLevel - 1], *subdivLevels[subdivLevel]);
   }
 
   globalMesh = subdivLevels[subdivLevel];
