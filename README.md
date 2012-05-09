@@ -9,6 +9,7 @@ In the viewer, use WASD or the mouse to rotate around two axes, and Q and E to
 move in and out.
 
 Keymap:
+
     m: Toggle normal interpolation (GL_SMOOTH)
     g: Toggle edge drawing
     f: Toggle face drawing
