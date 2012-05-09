@@ -10,7 +10,6 @@ struct draw_options_struct {
   bool drawFaces;
   bool drawVerteces;
   bool drawHull;
-  bool multicolorEdges;
   GLfloat edgeColor[4];
   GLfloat meshColor[4];
   GLfloat normalColor[4];

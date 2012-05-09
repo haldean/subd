@@ -23,7 +23,7 @@ void drawString(string s) {
 
   glRasterPos3f(0.01, 0.01, 0);
   glColor4f(1., 1., 1., 1.);
-  for (int i = 0; i < s.length(); i++) {
+  for (unsigned int i = 0; i < s.length(); i++) {
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, s[i]);
   }
 
@@ -118,23 +118,11 @@ void drawMesh(mesh &mesh, drawopts opts) {
     }
   }
 
-  if (opts.drawEdges || opts.drawNormals) {
+  if (opts.drawEdges) {
+    glLineWidth(2.0);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, opts.edgeColor);
     for (auto it = mesh.faces.begin(); it != mesh.faces.end(); it++) {
-      face* face = (*it);
-
-      if (opts.drawEdges) {
-        glLineWidth(2.0);
-        if (opts.multicolorEdges) {
-          glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE,
-              (GLfloat[]) {((float) (rand() % 255)) / 255.0,
-              ((float) (rand() % 255)) / 255.0,
-              ((float) (rand() % 255)) / 255.0});
-        } else {
-          glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, opts.edgeColor);
-        }
-
-        drawEdges(face, opts);
-      }
+      drawEdges(*it, opts);
     }
   }
 
@@ -167,7 +155,6 @@ drawopts defaultDrawOptions() {
   opts.drawFaces = true;
   opts.drawVerteces = false;
   opts.drawHull = true;
-  opts.multicolorEdges = false;
 
   opts.normalColor[0] = 1.;
   opts.normalColor[1] = .5;
