@@ -17,6 +17,7 @@ void ccSubdivideMesh(mesh &m0, mesh &m) {
     vertex *vc = new vertex();
     vc->id = m.verteces.size() + 1;
     vc->loc = f->centroid();
+    vc->e = NULL;
 
     m.verteces.push_back(vc);
     facepoints.push_back(vc);
@@ -41,8 +42,13 @@ void ccSubdivideMesh(mesh &m0, mesh &m) {
 
       e2c->id = m.edges.size() + 1;
       m.edges.push_back(e2c);
+      genedges.push_back(e2c);
+
       ec0->id = m.edges.size() + 1;
       m.edges.push_back(ec0);
+      genedges.push_back(ec0);
+
+      if (vc->e == NULL) vc->e = e2c;
 
       e2->next = e2c;
       e2c->next = ec0;
@@ -68,6 +74,12 @@ void ccSubdivideMesh(mesh &m0, mesh &m) {
       /* black magic. */
       genedges[i]->pair = genedges[(i+3) % N];
       genedges[(i+3) % N]->pair = genedges[i];
+    }
+  }
+
+  for (auto eit = m.edges.begin(); eit != m.edges.end(); eit++) {
+    if ((*eit)->pair == NULL) {
+      cout << "Pair not set for eid " << (*eit)->id << endl;
     }
   }
 

@@ -9,13 +9,16 @@ struct draw_options_struct {
   bool drawNormals;
   bool drawFaces;
   bool drawVerteces;
+  bool drawHull;
   bool multicolorEdges;
   GLfloat edgeColor[4];
   GLfloat meshColor[4];
   GLfloat normalColor[4];
+  GLfloat hullColor[4];
 } typedef drawopts;
 
 drawopts defaultDrawOptions();
+void drawHull(mesh&, drawopts);
 void drawMesh(mesh&, drawopts);
 void drawString(string);
 

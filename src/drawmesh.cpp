@@ -67,15 +67,6 @@ void drawFace(face* face, drawopts opts) {
 }
 
 void drawEdges(face* face, drawopts opts) {
-  glLineWidth(2.0);
-  if (opts.multicolorEdges) {
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE,
-        (GLfloat[]) {((float) (rand() % 255)) / 255.0,
-                     ((float) (rand() % 255)) / 255.0,
-                     ((float) (rand() % 255)) / 255.0});
-  } else {
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, opts.edgeColor);
-  }
   glBegin(GL_LINE_STRIP); {
     edge *e0 = face->e;
     edge *e = e0;
@@ -102,6 +93,19 @@ void drawNormals(face* face, drawopts opts) {
   }
 }
 
+void drawHull(mesh &mesh, drawopts opts) {
+  if (!opts.drawHull) return;
+
+  glEnable(GL_POLYGON_OFFSET_FILL);
+  glPolygonOffset(1.0, 1.0);
+  glLineWidth(2.0);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, opts.hullColor);
+
+  for (auto fit = mesh.faces.begin(); fit != mesh.faces.end(); fit++) {
+    drawEdges(*fit, opts);
+  }
+}
+
 void drawMesh(mesh &mesh, drawopts opts) {
   glEnable(GL_POLYGON_OFFSET_FILL);
   glPolygonOffset(1.0, 1.0);
@@ -116,7 +120,20 @@ void drawMesh(mesh &mesh, drawopts opts) {
   if (opts.drawEdges || opts.drawNormals) {
     for (auto it = mesh.faces.begin(); it != mesh.faces.end(); it++) {
       face* face = (*it);
-      if (opts.drawEdges) drawEdges(face, opts);
+
+      if (opts.drawEdges) {
+        glLineWidth(2.0);
+        if (opts.multicolorEdges) {
+          glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE,
+              (GLfloat[]) {((float) (rand() % 255)) / 255.0,
+              ((float) (rand() % 255)) / 255.0,
+              ((float) (rand() % 255)) / 255.0});
+        } else {
+          glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, opts.edgeColor);
+        }
+
+        drawEdges(face, opts);
+      }
     }
   }
 
@@ -148,6 +165,7 @@ drawopts defaultDrawOptions() {
   opts.drawNormals = false;
   opts.drawFaces = true;
   opts.drawVerteces = false;
+  opts.drawHull = true;
   opts.multicolorEdges = false;
 
   opts.normalColor[0] = 1.;
@@ -162,6 +180,9 @@ drawopts defaultDrawOptions() {
   opts.meshColor[1] = .5;
   opts.meshColor[2] = 0.;
   opts.meshColor[3] = 1.;
+
+  for (int i=0; i<3; i++) opts.hullColor[i] = 0.;
+  opts.hullColor[3] = .3;
 
   return opts;
 }

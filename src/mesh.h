@@ -19,9 +19,7 @@ enum subd_method {
 
 enum normal_mode {
   NO_NORMALS,
-  AVERAGE,
-  AREA_WEIGHTS,
-  ANGLE_WEIGHTS
+  AVERAGE
 };
 
 typedef pair<int, int> vertpair;

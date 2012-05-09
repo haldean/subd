@@ -163,30 +163,21 @@ void mesh::calculateNormals(normal_mode mode) {
       (*vit)->normal.setZero();
     }
   } else {
+    for (auto vit = verteces.begin(); vit != verteces.end(); vit++) {
+      (*vit)->normal.setZero();
+    }
+
     for (auto fit = faces.begin(); fit != faces.end(); fit++) {
       (*fit)->calculateNormal();
+      edge *e = (*fit)->e;
+      do {
+        e->vert->normal += (*fit)->normal;
+        e = e->next;
+      } while (e != (*fit)->e);
     }
 
     for (auto vit = verteces.begin(); vit != verteces.end(); vit++) {
-      vertex *v = *vit;
-      edge *e = v->e;
-      v->normal.setZero();
-
-      do {
-        face *f = e->f;
-
-        float w = 1;
-        if (mode == AREA_WEIGHTS) {
-          w = f->area();
-        } else if (mode == ANGLE_WEIGHTS) {
-          w = e->angleBetween(*e->next);
-        }
-
-        v->normal += w * f->normal;
-        e = e->next->pair;
-      } while (e != v->e);
-
-      v->normal.normalize();
+      (*vit)->normal.normalize();
     }
   }
 }

@@ -37,13 +37,14 @@ normal_mode mode = NO_NORMALS;
 
 char titleString[150];
 
+vector<mesh*> subdivLevels;
+int subdivLevel = 0;
+
 mesh *globalMesh;
 void drawGlobalMesh() {
   drawMesh(*globalMesh, drawOptions);
+  if (subdivLevel > 0) drawHull(*subdivLevels[0], drawOptions);
 }
-
-vector<mesh*> subdivLevels;
-int subdivLevel = 0;
 
 void increaseSubdiv() {
   subdivLevel++;
@@ -88,6 +89,9 @@ void setupRC()
   glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
 
+  glEnable (GL_BLEND);
+  glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   initLights();
 
   // Place Camera
@@ -126,6 +130,11 @@ void renderScene(void) {
   ostringstream debug_info;
   debug_info << globalMesh->faces.size() << " faces, ";
   debug_info << "subdivision level " << subdivLevel;
+  if (globalMesh->subdivision== LOOP_SUBD) {
+    debug_info << ", Loop subdivision";
+  } else {
+    debug_info << ", Catmull-Clark subdivision";
+  }
   drawString(debug_info.str());
 
   glFlush();
@@ -166,6 +175,8 @@ void specialKeys(unsigned char key, int x, int y) {
     drawOptions.drawNormals = !drawOptions.drawNormals;
   } else if (key == 'v') {
     drawOptions.drawVerteces = !drawOptions.drawVerteces;
+  } else if (key == 'h') {
+    drawOptions.drawHull = !drawOptions.drawHull;
 
   } else if (key == '1') {
     globalMesh->calculateNormals(NO_NORMALS);
@@ -173,12 +184,6 @@ void specialKeys(unsigned char key, int x, int y) {
   } else if (key == '2') {
     globalMesh->calculateNormals(AVERAGE);
     mode = AVERAGE;
-  } else if (key == '3') {
-    globalMesh->calculateNormals(AREA_WEIGHTS);
-    mode = AREA_WEIGHTS;
-  } else if (key == '4') {
-    globalMesh->calculateNormals(ANGLE_WEIGHTS);
-    mode = ANGLE_WEIGHTS;
 
   } else if (key == '<') {
     decreaseSubdiv();
