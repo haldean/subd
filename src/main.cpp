@@ -185,9 +185,9 @@ void specialKeys(unsigned char key, int x, int y) {
     globalMesh->calculateNormals(AVERAGE);
     mode = AVERAGE;
 
-  } else if (key == '<') {
+  } else if (key == '<' || key == ',') {
     decreaseSubdiv();
-  } else if (key == '>') {
+  } else if (key == '>' || key == '.') {
     increaseSubdiv();
   }
 
