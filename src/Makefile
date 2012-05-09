@@ -9,7 +9,7 @@ CC=clang++
 LDFLAGS=-lm -framework OpenGL -framework GLUT
 else
 CC=g++
-LDFLAGS=-L/usr/local/lib -L/usr/X11/lib
+LDFLAGS=-L/usr/local/lib -L/usr/X11/lib -lm -lglut -lGL -lGLU
 endif
 
 all: $(SOURCES) $(BINARY)
