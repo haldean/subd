@@ -3,7 +3,7 @@ subd: Mesh subdivision using Catmull-Clark and Loop methods
 Will Brown
 ---
 
-Run `./display_geom [obj file]` to run the viewer.
+Run `make` to compile and `./display_geom [obj file]` to run the viewer.
 
 In the viewer, use WASD or the mouse to rotate around two axes, and Q and E to
 move in and out.
@@ -19,3 +19,9 @@ Keymap:
     2: Set vertex normals to be the average of their adjacent face normals
     <: Decrease subdivision level
     >: Increase subdivision level
+
+Dependencies
+---
+* OpenGL
+* GLUT
+* Eigen (included in repository)

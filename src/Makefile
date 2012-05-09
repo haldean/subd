@@ -1,5 +1,5 @@
 BINARY=display_geom
-CFLAGS=-c -Wall -g -I../include/ --std=c++0x -I/usr/include/GL -I/usr/include -O0
+CFLAGS=-c -Wall -g -I../include/ --std=c++0x -I/usr/include/GL -I/usr/include -O2
 SOURCES=$(wildcard *.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 UNAME=$(shell uname)
