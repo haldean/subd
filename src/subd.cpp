@@ -21,21 +21,32 @@ void subdivideEdges(mesh &m0, mesh &m, subd_method method) {
     e->next = e_split;
     e_previous->next = e;
 
-    if (split_edges.find(e_split->pair->id) == split_edges.end()) {
+    if (e_split->pair == NULL ||
+        split_edges.find(e_split->pair->id) == split_edges.end()) {
       vertex *midpoint = new vertex();
       midpoint->id = m.verteces.size() + 1;
 
       if (method == LOOP_SUBD) {
-        vertex *opp1 = m0.edges[e_split->id - 1]->next->vert,
-               *opp2 = m0.edges[e_split->id - 1]->pair->next->vert;
-        midpoint->loc = 
-          (3. / 8.) * (v_start->loc + v_end->loc) +
-          (1. / 8.) * (opp1->loc + opp2->loc);
+        if (e_split->pair != NULL) {
+          vertex *opp1 = m0.edges[e_split->id - 1]->next->vert,
+                 *opp2 = m0.edges[e_split->id - 1]->pair->next->vert;
+          midpoint->loc = 
+            (3. / 8.) * (v_start->loc + v_end->loc) +
+            (1. / 8.) * (opp1->loc + opp2->loc);
+        } else {
+          midpoint->loc = v_start->loc + v_end->loc;
+          midpoint->loc /= 2;
+        }
       } else {
-        midpoint->loc = v_start->loc + v_end->loc 
-          + m0.edges[e_split->id - 1]->f->centroid()
-          + m0.edges[e_split->id - 1]->pair->f->centroid();
-        midpoint->loc /= 4;
+        if (e_split->pair != NULL) {
+          midpoint->loc = v_start->loc + v_end->loc 
+            + m0.edges[e_split->id - 1]->f->centroid()
+            + m0.edges[e_split->id - 1]->pair->f->centroid();
+          midpoint->loc /= 4;
+        } else {
+          midpoint->loc = v_start->loc + v_end->loc;
+          midpoint->loc /= 2;
+        }
       }
 
       e->vert = midpoint;

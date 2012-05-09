@@ -30,6 +30,7 @@ class vertex {
     vertex();
     vertex(const vertex &other);
     bool operator==(const vertex &other);
+    bool onboundary() const;
 
     int id;
     Vector3f loc;
@@ -46,6 +47,7 @@ class edge {
     edge* pair;
 
     edge* previous() const;
+    edge* rewind() const;
     Vector3f asVector() const;
     Vector3f midpoint() const;
     float angleBetween(const edge& other) const;

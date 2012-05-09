@@ -77,29 +77,36 @@ void ccSubdivideMesh(mesh &m0, mesh &m) {
     }
   }
 
-  for (auto eit = m.edges.begin(); eit != m.edges.end(); eit++) {
-    if ((*eit)->pair == NULL) {
-      cout << "Pair not set for eid " << (*eit)->id << endl;
-    }
-  }
-
   /* Move even verteces */
   for (auto vit = m0.verteces.begin(); vit != m0.verteces.end(); vit++) {
     vertex *v0 = *vit, *v = m.verteces[v0->id - 1];
+
+    if (v->onboundary()) {
+      edge *e0 = m0.edges[v0->e->id - 1]->rewind();
+      edge *e1 = e0->next;
+      while (e1->pair != NULL) e1 = e1->pair->next;
+
+      v->loc = e0->midpoint() + e1->midpoint() + 6 * v->loc;
+      v->loc /= 8;
+
+      continue;
+    }
 
     Vector3f F = Vector3f::Zero();
     Vector3f R = Vector3f::Zero();
     Vector3f P = v0->loc;
     int n = 0;
 
-    edge *e0 = m0.edges[v0->e->id - 1], *e = e0;
+    edge *e0 = m0.edges[v0->e->id - 1];
+    e0 = e0->rewind();
+    edge *e = e0;
     do {
       F += e->f->centroid();
       R += e->midpoint();
       n++;
 
       e = e->next->pair;
-    } while (e != e0);
+    } while (e != e0 && e != NULL);
 
     F /= n;
     R /= n;

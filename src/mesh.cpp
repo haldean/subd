@@ -29,10 +29,26 @@ bool vertex::operator==(const vertex &other) {
   return loc == other.loc;
 }
 
+bool vertex::onboundary() const {
+  edge *eloop = e;
+  do eloop = eloop->next->pair; while (eloop != e && eloop != NULL);
+  return eloop == NULL;
+}
+
 edge* edge::previous() const {
   edge *prev = next;
   while (prev->next != this) prev = prev->next;
   return prev;
+}
+
+/* If a vertex is non-manifold (meaning it isn't surrounded by faces) find the
+ * first edge such that repeatedly calling edge->next->pair will get you all
+ * edges associated with the vertex. */
+edge* edge::rewind() const {
+  if (pair == NULL) return (edge*) this;
+  edge *e = pair->previous();
+  while (e != this && e->pair != NULL) e = e->pair->previous();
+  return e;
 }
 
 Vector3f edge::asVector() const {
@@ -148,7 +164,9 @@ mesh::mesh(const mesh &other) {
   for (auto eit = other.edges.begin(); eit != other.edges.end(); eit++) {
     edge *e = *eit;
     edges[e->id - 1]->next = edges[e->next->id - 1];
-    edges[e->id - 1]->pair = edges[e->pair->id - 1];
+    if (e->pair != NULL) {
+      edges[e->id - 1]->pair = edges[e->pair->id - 1];
+    }
   }
 
   for (auto fit = other.faces.begin(); fit != other.faces.end(); fit++) {

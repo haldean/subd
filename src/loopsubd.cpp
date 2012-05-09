@@ -88,6 +88,19 @@ void loopSubdivideMesh(mesh &m0, mesh &m) {
   /* Apply smoothing operator to even verteces */
   for (int i = 0; i < evenverts; i++) {
     vertex *v = m.verteces[i];
+
+    if (v->onboundary()) {
+      edge *e0 = m0.edges[v->e->id - 1]->rewind();
+      edge *e1 = e0->next;
+      while (e1->pair != NULL) e1 = e1->pair->next;
+
+      v->loc *= 6;
+      v->loc += e0->previous()->vert->loc + e1->vert->loc;
+      v->loc /= 8;
+
+      continue;
+    }
+
     vector<Vector3f> neighbors;
 
     edge *e0 = m0.edges[v->e->id - 1],
