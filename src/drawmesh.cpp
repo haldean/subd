@@ -74,6 +74,7 @@ void drawEdges(face* face, drawopts opts) {
       vector3ToGL(e->vert->loc);
       e = e->next;
     } while (e != e0);
+    vector3ToGL(e0->vert->loc);
   } glEnd();
 }
 
