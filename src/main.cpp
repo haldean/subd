@@ -38,7 +38,7 @@ normal_mode mode = NO_NORMALS;
 char titleString[150];
 
 vector<mesh*> subdivLevels;
-int subdivLevel = 0;
+unsigned int subdivLevel = 0;
 
 mesh *globalMesh;
 void drawGlobalMesh() {

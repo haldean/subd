@@ -95,7 +95,7 @@ void addTriangle(vector<unsigned int> vids) {
   f->id = faces.size() + 1;
 
   edge *last_edge;
-  for (int i = 0; i < vids.size(); i++) {
+  for (unsigned int i = 0; i < vids.size(); i++) {
     edge *e = new edge();
     e->vert = verteces[vids[i] - 1];
     verteces[vids[i] - 1]->e = e;
