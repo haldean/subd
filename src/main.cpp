@@ -33,7 +33,7 @@ GLint viewport[4];
 GLdouble modelview[16];
 GLdouble projection[16];
 
-normal_mode mode = NO_NORMALS;
+normal_mode mode = AVERAGE;
 
 char titleString[150];
 

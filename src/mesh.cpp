@@ -121,6 +121,7 @@ void face::calculateNormal() {
 }
 
 mesh::mesh() {
+  subdivision = UNKNOWN;
 }
 
 /* Deep copies with pointers are NO FUN. */
@@ -173,6 +174,16 @@ mesh::mesh(const mesh &other) {
     faces[(*fit)->id - 1]->e = edges[(*fit)->e->id - 1];
     faces[(*fit)->id - 1]->calculateNormal();
   }
+}
+
+void mesh::guessSubdMethod() {
+  for (auto fit = faces.begin(); fit != faces.end(); fit++) {
+    if ((*fit)->sides() != 3) {
+      subdivision = CATMULL_CLARK_SUBD;
+      return;
+    }
+  }
+  subdivision = LOOP_SUBD;
 }
 
 void mesh::calculateNormals(normal_mode mode) {

@@ -14,7 +14,8 @@ class face;
 
 enum subd_method {
   LOOP_SUBD,
-  CATMULL_CLARK_SUBD
+  CATMULL_CLARK_SUBD,
+  UNKNOWN
 };
 
 enum normal_mode {
@@ -72,6 +73,7 @@ class mesh {
     mesh();
     mesh(const mesh &other);
     void calculateNormals(normal_mode mode);
+    void guessSubdMethod();
 
     vector<vertex*> verteces;
     vector<edge*> edges;

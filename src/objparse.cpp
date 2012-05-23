@@ -21,7 +21,7 @@ vector<vertex*> verteces;
 vector<edge*> edges;
 vector<face*> faces;
 vector<struct objface> objfaces;
-subd_method method;
+subd_method method = UNKNOWN;
 
 int parseVertexSpec(const string vspec) {
   unsigned int vid;
@@ -131,7 +131,11 @@ void loadObjFile(istream& file, mesh &mesh) {
   mesh.verteces = verteces;
   mesh.edges = edges;
   mesh.faces = faces;
-  mesh.subdivision = method;
+  if (method != UNKNOWN) {
+    mesh.subdivision = method;
+  } else {
+    mesh.guessSubdMethod();
+  }
 
   cout << "Loaded mesh: " << endl
     << "  " << verteces.size() << " verteces." << endl
