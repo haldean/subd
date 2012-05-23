@@ -1,4 +1,4 @@
-EXECUTABLE=display_geom
+EXECUTABLE=subd
 
 all:
 	make -C src
