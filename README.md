@@ -16,6 +16,7 @@ Keymap:
     n: Toggle vertex normal drawing (must be in vertex normal mode)
     v: Toggle vertex drawing (this is very expensive for large meshes)
     h: Toggle hull drawing at subdivision levels > 0
+    c: Toggle cel shading
     1: Use face normals only
     2: Set vertex normals to be the average of their adjacent face normals
     <: Decrease subdivision level

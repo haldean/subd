@@ -25,6 +25,7 @@ GLfloat mat_shininess[] = {50.0};
 
 // Parameters
 
+GLuint celProgram;
 drawopts drawOptions;
 GLfloat camRotX, camRotY, camPosX, camPosY, camPosZ;
 GLboolean isSmooth;
@@ -42,6 +43,11 @@ unsigned int subdivLevel = 0;
 
 mesh *globalMesh;
 void drawGlobalMesh() {
+  if (drawOptions.useCelShader) {
+    glUseProgram(celProgram);
+  } else {
+    glUseProgram(0);
+  }
   drawMesh(*globalMesh, drawOptions);
   if (subdivLevel > 0) drawHull(*subdivLevels[0], drawOptions);
 }
@@ -77,6 +83,58 @@ void initLights() {
   glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
 }
 
+void initShaders() {
+  ifstream vert_file("vert.glsl");
+  if (!vert_file.good()) {
+    cout << "Could not open vertex shader (vert.glsl)" << endl;
+    exit(-1);
+  }
+  string vert_source((istreambuf_iterator<char>(vert_file)), istreambuf_iterator<char>());
+
+  ifstream frag_file("frag.glsl");
+  if (!frag_file.good()) {
+    cout << "Could not open fragment shader (frag.glsl)" << endl;
+    exit(-1);
+  }
+  string frag_source((istreambuf_iterator<char>(frag_file)), istreambuf_iterator<char>());
+
+
+  unsigned int vert_shader = glCreateShader(GL_VERTEX_SHADER),
+               frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
+  const char *vs = vert_source.c_str(), *fs = frag_source.c_str();
+  glShaderSource(vert_shader, 1, (const char **) &vs, NULL);
+  glShaderSource(frag_shader, 1, (const char **) &fs, NULL);
+
+  GLint shader_compiled;
+
+  glCompileShader(vert_shader);
+  glGetShaderiv(vert_shader, GL_COMPILE_STATUS, &shader_compiled);
+  if (shader_compiled == GL_FALSE) {
+    cout << "Failed to compile vertex shader." << endl;
+    char err[512];
+    glGetShaderInfoLog(vert_shader, 512, NULL, err);
+    cout << err << endl;
+    exit(-1);
+  }
+
+  glCompileShader(frag_shader);
+  glGetShaderiv(frag_shader, GL_COMPILE_STATUS, &shader_compiled);
+  if (shader_compiled == GL_FALSE) {
+    cout << "Failed to compile fragment shader." << endl;
+    char err[512];
+    glGetShaderInfoLog(frag_shader, 512, NULL, err);
+    cout << err << endl;
+    exit(-1);
+  }
+
+  unsigned int program = glCreateProgram();
+  glAttachShader(program, vert_shader);
+  glAttachShader(program, frag_shader);
+
+  glLinkProgram(program);
+  celProgram = program;
+}
+
 void setCamera() {
   glTranslatef(0, 0, camPosZ);
   glRotatef(camRotX, 1, 0, 0);
@@ -93,6 +151,7 @@ void setupRC()
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   initLights();
+  initShaders();
 
   // Place Camera
   camRotX = 350.0f;
@@ -166,6 +225,8 @@ void specialKeys(unsigned char key, int x, int y) {
     } else {
       glShadeModel(GL_FLAT);
     }
+  } else if (key == 'c') {
+    drawOptions.useCelShader = !drawOptions.useCelShader;
 
   } else if (key == 'g') {
     drawOptions.drawEdges = !drawOptions.drawEdges;
