@@ -11,6 +11,7 @@ struct draw_options_struct {
   bool drawVerteces;
   bool drawHull;
   bool useCelShader;
+  bool animate;
   GLfloat edgeColor[4];
   GLfloat meshColor[4];
   GLfloat normalColor[4];

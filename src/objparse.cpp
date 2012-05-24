@@ -136,6 +136,7 @@ void loadObjFile(istream& file, mesh &mesh) {
   } else {
     mesh.guessSubdMethod();
   }
+  mesh.scaleToUnitCube();
 
   cout << "Loaded mesh: " << endl
     << "  " << verteces.size() << " verteces." << endl

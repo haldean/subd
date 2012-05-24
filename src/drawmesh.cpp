@@ -105,6 +105,8 @@ void drawHull(mesh &mesh, drawopts opts) {
   for (auto fit = mesh.faces.begin(); fit != mesh.faces.end(); fit++) {
     drawEdges(*fit, opts);
   }
+
+  glutWireCube(1.);
 }
 
 void drawMesh(mesh &mesh, drawopts opts) {
@@ -157,6 +159,7 @@ drawopts defaultDrawOptions() {
   opts.drawHull = false;
 
   opts.useCelShader = false;
+  opts.animate = true;
 
   opts.normalColor[0] = 1.;
   opts.normalColor[1] = .5;

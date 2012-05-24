@@ -210,3 +210,29 @@ void mesh::calculateNormals(normal_mode mode) {
     }
   }
 }
+
+void mesh::scaleToUnitCube() {
+  float minx = INFINITY, miny = INFINITY, minz = INFINITY,
+        maxx = -INFINITY, maxy = -INFINITY, maxz = -INFINITY;
+
+  for (auto vit = verteces.begin(); vit != verteces.end(); vit++) {
+    Vector3f loc = (*vit)->loc;
+    if (loc[0] < minx) minx = loc[0];
+    if (loc[0] > maxx) maxx = loc[0];
+    if (loc[1] < miny) miny = loc[1];
+    if (loc[1] > maxy) maxy = loc[1];
+    if (loc[2] < minz) minz = loc[2];
+    if (loc[2] > maxz) maxz = loc[2];
+  }
+
+  Vector3f translate(
+      minx - (minx - maxx) / 2,
+      miny - (miny - maxy) / 2,
+      minz - (minz - maxz) / 2);
+  float scale = 1. / max(maxx - minx, max(maxy - miny, maxz - minz));
+
+  for (auto vit = verteces.begin(); vit != verteces.end(); vit++) {
+    (*vit)->loc -= translate;
+    (*vit)->loc *= scale;
+  }
+}

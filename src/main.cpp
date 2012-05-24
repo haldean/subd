@@ -6,8 +6,8 @@
 #include "mesh.h"
 #include "objparse.h"
 #include "drawmesh.h"
-#include "trackball.h"
 #include "subd.h"
+#include "trackball.h"
 
 #define kRotationStep 10.0f
 #define kTranslationStep .3f
@@ -143,7 +143,7 @@ void setCamera() {
 
 void setupRC()
 {
-  glClearColor(.2, .2, .2, 1.);
+  glClearColor(.7, .7, .7, 1.);
   glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
 
@@ -154,11 +154,11 @@ void setupRC()
   initShaders();
 
   // Place Camera
-  camRotX = 350.0f;
-  camRotY = 680.0f;
-  camPosX = 0.0f;
-  camPosY = 0.0f;
-  camPosZ = -10.5f;
+  camRotX = 0.;
+  camRotY = 0.;
+  camPosX = 0.;
+  camPosY = 0.;
+  camPosZ = -2.f;
 
   isSmooth = true;
 
@@ -197,6 +197,12 @@ void renderScene(void) {
   drawString(debug_info.str());
 
   glFlush();
+
+  if (drawOptions.animate) {
+    camRotX += .2;
+    camRotY += .3;
+    glutPostRedisplay();
+  }
 }
 
 
@@ -227,6 +233,8 @@ void specialKeys(unsigned char key, int x, int y) {
     }
   } else if (key == 'c') {
     drawOptions.useCelShader = !drawOptions.useCelShader;
+  } else if (key == 'z') {
+    drawOptions.animate = !drawOptions.animate;
 
   } else if (key == 'g') {
     drawOptions.drawEdges = !drawOptions.drawEdges;

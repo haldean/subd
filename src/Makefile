@@ -1,11 +1,12 @@
 BINARY=subd
-CFLAGS=-c -Wall -g -I../include/ --std=c++0x -I/usr/include/GL -I/usr/include -O2
+CFLAGS=-c -Wall -I../include/ --std=c++0x -I/usr/include/GL -I/usr/include -O2
 SOURCES=$(wildcard *.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 UNAME=$(shell uname)
 
 ifeq ($(UNAME), Darwin)
 CC=clang++
+CFLAGS+=-arch x86_64
 LDFLAGS=-lm -framework OpenGL -framework GLUT
 else
 CC=g++

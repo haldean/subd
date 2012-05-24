@@ -74,6 +74,7 @@ class mesh {
     mesh(const mesh &other);
     void calculateNormals(normal_mode mode);
     void guessSubdMethod();
+    void scaleToUnitCube();
 
     vector<vertex*> verteces;
     vector<edge*> edges;

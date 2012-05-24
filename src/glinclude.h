@@ -3,5 +3,5 @@
 #else
 #include <gl.h>
 #include <glu.h>
-#include <glut.h>
+#include <GL/glut.h>
 #endif
