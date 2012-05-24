@@ -21,6 +21,7 @@ Keymap:
     2: Set vertex normals to be the average of their adjacent face normals
     <: Decrease subdivision level
     >: Increase subdivision level
+    z: Toggle rotating animation
 
 Dependencies
 ---
