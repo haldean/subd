@@ -158,7 +158,7 @@ drawopts defaultDrawOptions() {
   opts.drawVerteces = false;
   opts.drawHull = false;
 
-  opts.useCelShader = false;
+  opts.useCelShader = true;
   opts.animate = true;
 
   opts.normalColor[0] = 1.;
